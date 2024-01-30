@@ -5,11 +5,10 @@ import { parseArgs } from './lib/parse-args.js'
 import { fork } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { getCommandPath, printWorkingDirectory, shutdown } from './lib/utils.js'
+import { AVAILABEL_COMMANDS } from './lib/constants.js'
 
 global.inputArgs = parseArgs(process.argv)
-process.chdir(os.homedir())
-
-const AVAILABEL_COMMANDS = ['.exit', 'up', 'cd', 'ls', 'cat', 'add']
+// process.chdir(os.homedir())
 
 if (global.inputArgs.username) {
   process.stdout.write(
@@ -26,7 +25,7 @@ process.stdin.setEncoding('utf-8').on('data', async (input) => {
   const args = parsedInput.slice(1)
 
   if (!AVAILABEL_COMMANDS.includes(command)) {
-    process.stdout.write(`Invalid input, command ${command} is not supported\n`)
+    console.log(`Invalid input, command ${command} is not supported\n`)
 
     return
   }

@@ -2,7 +2,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 export const printWorkingDirectory = () => {
-  process.stdout.write(`You are currently in ${process.cwd()}\n`)
+  console.log(`You are currently in ${process.cwd()}\n`)
 }
 
 export const truncateString = (value, max = 40, postfix = '...') => {
@@ -14,7 +14,7 @@ export const truncateString = (value, max = 40, postfix = '...') => {
 }
 
 export const shutdown = () => {
-  process.stdout.write(
+  console.log(
     `Thank you for using File Manager, ${global.inputArgs.username}, goodbye!\n`
   )
 
@@ -26,4 +26,8 @@ export const getCommandPath = (command) => {
   const cmdPath = path.join(sourceDir, '..', 'bin', `${command}.js`)
 
   return cmdPath
+}
+
+export const getArgs = (start = 2) => {
+  return process.argv.splice(start)
 }
