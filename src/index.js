@@ -9,6 +9,7 @@ import {
   goUpInFileSystem,
   listDirectory,
 } from './lib/navigation.js'
+import { createFile, printFileContents } from './lib/file-system.js'
 
 global.inputArgs = parseArgs(process.argv)
 process.chdir(os.homedir())
@@ -39,6 +40,12 @@ process.stdin.setEncoding('utf-8').on('data', async (input) => {
       break
     case 'ls':
       await listDirectory(args[0])
+      break
+    case 'cat':
+      await printFileContents(args[0])
+      break
+    case 'add':
+      await createFile(args[0], args[1], args[2])
       break
     default:
       process.stdout.write('Invalid input\n')
