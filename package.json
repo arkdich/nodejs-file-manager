@@ -1,0 +1,22 @@
+{
+  "name": "nodejs-file-manager",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arkdich/nodejs-file-manager.git"
+  },
+  "author": "arkdich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arkdich/nodejs-file-manager/issues"
+  },
+  "homepage": "https://github.com/arkdich/nodejs-file-manager#readme"
+}
