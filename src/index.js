@@ -2,17 +2,14 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import { parseArgs } from './lib/parse-args.js'
-import { shutdown } from './lib/utils/shutdown.js'
-import { printWorkingDirectory } from './lib/utils/print-utils.js'
-import {
-  changeDirectory,
-  goUpInFileSystem,
-  listDirectory,
-} from './lib/navigation.js'
-import { createFile, printFileContents } from './lib/file-system.js'
+import { fork } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
+import { getCommandPath, printWorkingDirectory, shutdown } from './lib/utils.js'
 
 global.inputArgs = parseArgs(process.argv)
 process.chdir(os.homedir())
+
+const AVAILABEL_COMMANDS = ['.exit', 'up', 'cd', 'ls', 'cat', 'add']
 
 if (global.inputArgs.username) {
   process.stdout.write(
@@ -28,31 +25,27 @@ process.stdin.setEncoding('utf-8').on('data', async (input) => {
   const command = parsedInput[0]
   const args = parsedInput.slice(1)
 
+  if (!AVAILABEL_COMMANDS.includes(command)) {
+    process.stdout.write(`Invalid input, command ${command} is not supported\n`)
+
+    return
+  }
+
   switch (command) {
     case '.exit':
       shutdown()
-      break
+      return
     case 'up':
-      goUpInFileSystem()
-      break
     case 'cd':
-      changeDirectory(args[0])
-      break
-    case 'ls':
-      await listDirectory(args[0])
-      break
-    case 'cat':
-      await printFileContents(args[0])
-      break
-    case 'add':
-      await createFile(args[0], args[1], args[2])
-      break
-    default:
-      process.stdout.write('Invalid input\n')
-      break
+      process.chdir(args[0] ?? '..')
+      printWorkingDirectory()
+      return
   }
 
-  printWorkingDirectory()
+  const cmdPath = getCommandPath(command)
+  const child = fork(cmdPath, args)
+
+  child.on('close', printWorkingDirectory)
 })
 
 process.on('SIGINT', shutdown)
