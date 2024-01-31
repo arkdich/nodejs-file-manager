@@ -29,5 +29,5 @@ export const getCommandPath = (command) => {
 }
 
 export const getArgs = (start = 2) => {
-  return process.argv.splice(start)
+  return process.argv.slice(start)
 }
