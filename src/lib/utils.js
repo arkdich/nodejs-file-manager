@@ -2,7 +2,11 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 export const printWorkingDirectory = () => {
-  console.log(`You are currently in ${process.cwd()}\n`)
+  console.log(`You are currently in ${process.cwd()}`)
+}
+
+export const printPromt = () => {
+  process.stdout.write(`To list all available command enter 'help'\n> `)
 }
 
 export const truncateString = (value, max = 40, postfix = '...') => {

@@ -4,8 +4,13 @@ import os from 'node:os'
 import { parseArgs } from './lib/parse-args.js'
 import { fork } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { getCommandPath, printWorkingDirectory, shutdown } from './lib/utils.js'
-import { AVAILABEL_COMMANDS } from './lib/constants.js'
+import {
+  getCommandPath,
+  printPromt,
+  printWorkingDirectory,
+  shutdown,
+} from './lib/utils.js'
+import { AVAILABLE_COMMANDS } from './lib/constants.js'
 
 global.inputArgs = parseArgs(process.argv)
 // process.chdir(os.homedir())
@@ -15,8 +20,8 @@ if (global.inputArgs.username) {
     `Welcome to the File Manager, ${global.inputArgs.username}!\n`
   )
 }
-
 printWorkingDirectory()
+printPromt()
 
 process.stdin.setEncoding('utf-8').on('data', async (input) => {
   const parsedInput = input.trim().split(' ')
@@ -24,8 +29,9 @@ process.stdin.setEncoding('utf-8').on('data', async (input) => {
   const command = parsedInput[0]
   const args = parsedInput.slice(1)
 
-  if (!AVAILABEL_COMMANDS.includes(command)) {
+  if (!AVAILABLE_COMMANDS.some((cmd) => cmd.name === command)) {
     console.log(`Invalid input, command ${command} is not supported\n`)
+    printPromt()
 
     return
   }
@@ -38,13 +44,17 @@ process.stdin.setEncoding('utf-8').on('data', async (input) => {
     case 'cd':
       process.chdir(args[0] ?? '..')
       printWorkingDirectory()
+      printPromt()
       return
   }
 
   const cmdPath = getCommandPath(command)
   const child = fork(cmdPath, args)
 
-  child.on('close', printWorkingDirectory)
+  child.on('close', () => {
+    printWorkingDirectory()
+    printPromt()
+  })
 })
 
 process.on('SIGINT', shutdown)
