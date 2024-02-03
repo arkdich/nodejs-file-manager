@@ -6,20 +6,22 @@ import { fork } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import {
   getCommandPath,
+  paintText,
   printPromt,
   printWorkingDirectory,
   shutdown,
 } from './lib/utils.js'
 import { AVAILABLE_COMMANDS } from './lib/constants.js'
 
-global.inputArgs = parseArgs(process.argv)
+const args = parseArgs(process.argv)
 // process.chdir(os.homedir())
 
-if (global.inputArgs.username) {
-  process.stdout.write(
-    `Welcome to the File Manager, ${global.inputArgs.username}!\n`
+if (args.username) {
+  console.log(
+    `Welcome to the File Manager, ${paintText(args.username, 'green')}!`
   )
 }
+
 printWorkingDirectory()
 printPromt()
 
@@ -38,7 +40,12 @@ process.stdin.setEncoding('utf-8').on('data', async (input) => {
 
   switch (command) {
     case '.exit':
-      shutdown()
+      shutdown(
+        `Thank you for using File Manager, ${paintText(
+          args.username,
+          'green'
+        )}, goodbye!\n`
+      )
       return
     case 'up':
     case 'cd':

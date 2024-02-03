@@ -2,11 +2,15 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 export const printWorkingDirectory = () => {
-  console.log(`You are currently in ${process.cwd()}`)
+  const cwd = process.cwd()
+
+  console.log(`You are currently in ${paintText(cwd, 'green')}`)
 }
 
 export const printPromt = () => {
-  process.stdout.write(`To list all available command enter 'help'\n> `)
+  process.stdout.write(
+    `To list all available command enter ${paintText('help', 'green')}\n> `
+  )
 }
 
 export const truncateString = (value, max = 40, postfix = '...') => {
@@ -17,11 +21,8 @@ export const truncateString = (value, max = 40, postfix = '...') => {
   return value.length >= max ? value.substring(0, max).concat(postfix) : value
 }
 
-export const shutdown = () => {
-  console.log(
-    `Thank you for using File Manager, ${global.inputArgs.username}, goodbye!\n`
-  )
-
+export const shutdown = (prompt) => {
+  console.log(prompt)
   process.exit(0)
 }
 
@@ -34,4 +35,15 @@ export const getCommandPath = (command) => {
 
 export const getArgs = (start = 2) => {
   return process.argv.slice(start)
+}
+
+export const paintText = (text, color) => {
+  let colorCode = ''
+
+  switch (color) {
+    case 'green':
+      colorCode = '\x1b[32m'
+  }
+
+  return `${colorCode}${text}\x1b[0m`
 }
