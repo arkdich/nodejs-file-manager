@@ -3,16 +3,15 @@ import { getArgs } from '../lib/utils.js'
 
 const [file] = getArgs()
 
+if (!file) {
+  console.log(`Invalid input, you must provide target path`)
+  process.exit(1)
+}
+
 const readStream = createReadStream(file, { encoding: 'utf-8' })
 
 readStream.on('error', (err) => {
-  if (err.code === 'EISDIR') {
-    console.log('Error, target must be a file')
-  } else if (err.code === 'ENOENT') {
-    console.log(`Error, file ${err.path} doesn't exist`)
-  } else {
-    throw err
-  }
+  console.log(`Operation failed, ${err.message}`)
 })
 
 readStream.pipe(process.stdout)

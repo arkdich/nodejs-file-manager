@@ -1,4 +1,4 @@
-import { getArgs, paintText, printPromt } from '../lib/utils.js'
+import { getArgs, paintText } from '../lib/utils.js'
 import os from 'node:os'
 
 const [flag] = getArgs()
@@ -33,9 +33,7 @@ if (flag === '--cpus') {
     const speed = (cpu.speed / 1000).toFixed(2)
 
     console.log(
-      `Model: ${paintText(cpu.model, 'green')}\nSpeed: ${paintText(
-        speed + 'Ghz'
-      )}\n`
+      `Model: ${paintText(cpu.model)}\nSpeed: ${paintText(speed + 'Ghz')}\n`
     )
   })
 }

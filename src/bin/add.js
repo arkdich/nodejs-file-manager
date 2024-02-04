@@ -1,19 +1,18 @@
 import path from 'node:path'
-import fs from 'node:fs'
+import { writeFile } from 'node:fs/promises'
 import { getArgs } from '../lib/utils.js'
 
 const [name, contents = '', encoding = 'utf-8'] = getArgs()
 
+if (!name) {
+  console.log(`Invalid input, you must provide destination path`)
+  process.exit(1)
+}
+
 try {
-  await fs.promises.access(name, fs.constants.F_OK)
+  await writeFile(name, contents, { encoding, flag: 'wx' })
 
-  console.log('Error, file already exists\n')
+  console.log(`Successfully created file ${name}`)
 } catch (err) {
-  if (err.code === 'ENOENT') {
-    await fs.promises.writeFile(name, contents, { encoding })
-
-    console.log(`Successfully created file ${name}`)
-  } else {
-    throw err
-  }
+  console.log(`Operation failed, ${err.message}`)
 }

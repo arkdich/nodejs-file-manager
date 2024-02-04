@@ -2,16 +2,17 @@ import { getArgs } from '../lib/utils.js'
 import { fork } from 'node:child_process'
 import fs from 'node:fs/promises'
 
-export const [target] = getArgs()
+const [target] = getArgs()
+
+if (!target) {
+  console.log(`Invalid input, you must provide target path`)
+  process.exit(1)
+}
 
 try {
   await fs.unlink(target)
 
   console.log(`Successfully deleted file ${target}`)
 } catch (err) {
-  if (err.code === 'ENOENT') {
-    console.log(`Error, file ${err.path} doesn't exist\n`)
-  } else {
-    throw err
-  }
+  console.log(`Operation failed, ${err.message}`)
 }

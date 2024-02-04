@@ -7,23 +7,25 @@ import { fileURLToPath } from 'node:url'
 import {
   getCommandPath,
   paintText,
-  printPromt,
+  printPrompt,
   printWorkingDirectory,
   shutdown,
 } from './lib/utils.js'
 import { AVAILABLE_COMMANDS } from './lib/constants.js'
 
 const args = parseArgs(process.argv)
-// process.chdir(os.homedir())
+const exitPrompt = `Thank you for using File Manager, ${paintText(
+  args.username
+)}, goodbye!`
+
+process.chdir(os.homedir())
 
 if (args.username) {
-  console.log(
-    `Welcome to the File Manager, ${paintText(args.username, 'green')}!`
-  )
+  console.log(`Welcome to the File Manager, ${paintText(args.username)}!`)
 }
 
 printWorkingDirectory()
-printPromt()
+printPrompt()
 
 process.stdin.setEncoding('utf-8').on('data', async (input) => {
   const parsedInput = input.trim().split(' ')
@@ -32,26 +34,21 @@ process.stdin.setEncoding('utf-8').on('data', async (input) => {
   const args = parsedInput.slice(1)
 
   if (!AVAILABLE_COMMANDS.some((cmd) => cmd.name === command)) {
-    console.log(`Invalid input, command ${command} is not supported\n`)
-    printPromt()
+    console.log(`Invalid input, command ${paintText(command)} is not supported`)
+    printPrompt()
 
     return
   }
 
   switch (command) {
     case '.exit':
-      shutdown(
-        `Thank you for using File Manager, ${paintText(
-          args.username,
-          'green'
-        )}, goodbye!\n`
-      )
+      shutdown(exitPrompt)
       return
     case 'up':
     case 'cd':
       process.chdir(args[0] ?? '..')
       printWorkingDirectory()
-      printPromt()
+      printPrompt()
       return
   }
 
@@ -60,8 +57,10 @@ process.stdin.setEncoding('utf-8').on('data', async (input) => {
 
   child.on('close', () => {
     printWorkingDirectory()
-    printPromt()
+    printPrompt()
   })
 })
 
-process.on('SIGINT', shutdown)
+process.on('SIGINT', () => {
+  shutdown(exitPrompt)
+})

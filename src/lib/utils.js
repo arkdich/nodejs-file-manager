@@ -4,12 +4,12 @@ import { fileURLToPath } from 'node:url'
 export const printWorkingDirectory = () => {
   const cwd = process.cwd()
 
-  console.log(`You are currently in ${paintText(cwd, 'green')}`)
+  console.log(`You are currently in ${paintText(cwd)}`)
 }
 
-export const printPromt = () => {
+export const printPrompt = () => {
   process.stdout.write(
-    `To list all available command enter ${paintText('help', 'green')}\n> `
+    `To list all available command enter ${paintText('help')}\n> `
   )
 }
 
