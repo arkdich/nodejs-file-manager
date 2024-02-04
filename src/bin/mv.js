@@ -1,15 +1,25 @@
+import { createWriteStream, openSync } from 'node:fs'
 import { getArgs } from '../lib/utils.js'
-import { fork } from 'node:child_process'
+import { fork, spawn, spawnSync } from 'node:child_process'
 import fs from 'node:fs/promises'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const [target] = getArgs()
+const [target, dest] = getArgs()
 
 try {
-  await import('./cp.js')
+  const dir = path.dirname(fileURLToPath(import.meta.url))
+  const copyUtilPath = path.join(dir, 'cp.js')
+  const deleteUtilPath = path.join(dir, 'rm.js')
 
-  await fs.access(target, fs.constants.F_OK)
+  const copyProcess = fork(copyUtilPath, [target, dest])
 
-  await import('./rm.js')
+  copyProcess.on('exit', (code) => {
+    if (code !== 0) return
+
+    const deleteProcess = fork(deleteUtilPath, [target])
+  })
 } catch (err) {
-  console.log(`Error deleting file ${err.path}, ${err.code}`)
+  console.log(`Operation failed, ${err.message}`)
+  process.exitCode = 1
 }

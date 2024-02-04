@@ -27,4 +27,5 @@ readStream.on('end', () => {
 
 readStream.on('error', (err) => {
   console.log(`Operation failed, ${err.message}`)
+  process.exitCode = 1
 })

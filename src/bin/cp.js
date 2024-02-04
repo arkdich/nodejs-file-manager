@@ -1,7 +1,7 @@
 import { constants, createReadStream, createWriteStream } from 'node:fs'
 import { access, copyFile, cp, rename } from 'node:fs/promises'
 import { pipeline } from 'node:stream/promises'
-import { getArgs } from '../lib/utils.js'
+import { getArgs, paintText } from '../lib/utils.js'
 
 const [target, dest] = getArgs()
 
@@ -20,7 +20,12 @@ try {
 
   await pipeline(readStream, writeStream)
 
-  console.log(`Successfully copied contents of ${target} into ${dest}`)
+  console.log(
+    `Successfully copied contents of ${paintText(target)} into ${paintText(
+      dest
+    )}`
+  )
 } catch (err) {
   console.log(`Operation failed, ${err.message}`)
+  process.exitCode = 1
 }

@@ -1,5 +1,5 @@
 import { createBrotliCompress } from 'node:zlib'
-import { getArgs } from '../lib/utils.js'
+import { getArgs, paintText } from '../lib/utils.js'
 import { createReadStream, createWriteStream } from 'node:fs'
 import { pipeline } from 'node:stream/promises'
 import { access, constants } from 'node:fs/promises'
@@ -20,7 +20,10 @@ try {
 
   await pipeline(readStream, compressStream, writeStream)
 
-  console.log(`Successfully compressed ${target} into ${dest}`)
+  console.log(
+    `Successfully compressed ${paintText(target)} into ${paintText(dest)}`
+  )
 } catch (err) {
   console.log(`Operation failed, ${err.message}`)
+  process.exitCode = 1
 }

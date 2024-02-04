@@ -12,6 +12,7 @@ const readStream = createReadStream(file, { encoding: 'utf-8' })
 
 readStream.on('error', (err) => {
   console.log(`Operation failed, ${err.message}`)
+  process.exitCode = 1
 })
 
 readStream.pipe(process.stdout)
