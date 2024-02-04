@@ -37,7 +37,7 @@ export const getArgs = (start = 2) => {
   return process.argv.slice(start)
 }
 
-export const paintText = (text, color) => {
+export const paintText = (text, color = 'green') => {
   let colorCode = ''
 
   switch (color) {
